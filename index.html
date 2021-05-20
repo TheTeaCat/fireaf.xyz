@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>YOOO THAT'S FIRE AF!!!</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+      html, body {
+        margin: 0; padding: 0;
+        width:100%; height:100%;
+        background: #000;
+      }
+
+      body {
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        justify-content:center;
+        font-size:min(4vw,24px);
+        line-height:1.3;
+      }
+
+      #overlay {
+        position:absolute;
+        top:0;left:0;
+        width:100%;height:100%;
+        z-index:1;
+        background: rgba(0,0,0,0);
+        background: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 70%, rgba(0,0,0,1) 100%);
+      }
+
+      #width-setter {
+        height:0;
+        visibility:hidden;
+      }
+
+      #fire-container {
+        position:relative;
+        height:80vh;
+        display:flex;
+        flex-direction:column-reverse;
+        overflow:hidden;
+        padding-bottom:1.3em;
+      }
+
+      @keyframes grow {
+        from{height:0}
+        to{height:1.3em}
+      }
+
+      .line {
+        animation-name: grow;
+        animation-duration: 1s;
+        animation-timing-function:linear;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="fire-container">
+      <div id="overlay"></div>
+    </div>    
+    <script>
+      cont = document.getElementById('fire-container')
+
+      emoji = ()=>{return Math.random()>0.5 ? '🔥' : '💯'}
+
+      emojiPerLine = 16
+      emojiPerSecond = 16
+      head = 0
+      tail = 1
+
+      // Create width setting elem in wrapper
+      widthSetter = document.createElement('div')
+      widthSetter.id = 'width-setter'
+      widthSetter.innerHTML = '💯'.repeat(emojiPerLine)
+      cont.appendChild(widthSetter)
+
+      // Set interval to keep adding emoji
+      setInterval(()=>{
+        // Get the current elem at head
+        headElem = document.getElementById('line-'+head)
+
+        // If the head elem isn't full, add an emoji & return
+        if (headElem && headElem.innerHTML.length < emojiPerLine*2) {
+          headElem.innerHTML += emoji()
+          return
+        }
+
+        // Otherwise, create a new head
+        head++
+        newLine = document.createElement('div')
+        newLine.classList.add('line')
+        newLine.id = 'line-'+head
+        newLine.innerHTML = emoji()
+
+        // Then append new line
+        cont.prepend(newLine)
+
+      },1000/emojiPerSecond)
+
+      // Add interval to remove lines from the tail if they're invisible
+      setInterval(()=>{
+        // Get current tail elem
+        tailElem = document.getElementById('line-'+tail)
+        // Yeet it if it's off the screen
+        if(tailElem && tailElem.offsetTop + tailElem.offsetHeight < 0) {
+          tailElem.remove()
+          tail++
+        }
+      },10)
+    </script>
+  </body>
+</html>
